@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="kuningmuda">#FFFF66</color>
+    <color name="kuning">#FFCC00</color>
+    <color name="oranye">#FF9900</color>
+    <color name="merah">#FF0000</color>
+    <color name="biru1">#005073</color>
+    <color name="biru2">#107dac</color>
+    <color name="biru3">#189ad3</color>
+    <color name="biru4">#1ebbd7</color>
+    <color name="biru5">#71c7ec</color>
+    <color name="p_biru1">#005b7c</color>
+    <!--<color name="p_biru2">#008eab</color>-->
+    <!--<color name="p_biru3">#01bcc6</color>-->
+    <!--<color name="p_krem1">#d5d1ca</color>-->
+    <color name="g_abu1">#efefee</color>
+    <!--<color name="g_biru2">#b4bfbf</color>-->
+    <!--<color name="g_biru3">#798e93</color>-->
+    <color name="g_biru4">#1f3c4a</color>
+    <!--<color name="ap_1">#43640b</color>-->
+    <!--<color name="ap_2">#80a71a</color>-->
+    <!--<color name="ap_3">#afca54</color>-->
+    <!--<color name="ap_4">#d3dcc8</color>-->
+    <!--<color name="ap_5">#a4bfd1</color>-->
+
+
+
+
+
+
+
+
+</resources>
