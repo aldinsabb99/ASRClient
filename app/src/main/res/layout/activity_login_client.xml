@@ -6,6 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".LoginClient">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="45dp"
+            android:visibility="invisible"
+            android:id="@+id/load"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/settings"
+            android:id="@+id/connect"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -51,9 +70,11 @@
             android:textColor="@color/kuningmuda"
             android:textColorHint="@color/merah"
             android:id="@+id/buttonLogin"
-            android:background="@color/biru1"/>
+            android:background="@color/g_biru4"/>
 
     </LinearLayout>
+
+    </RelativeLayout>
 
 
 </android.support.constraint.ConstraintLayout>

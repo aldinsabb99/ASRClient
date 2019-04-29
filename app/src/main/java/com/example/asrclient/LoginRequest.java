@@ -1,24 +1,22 @@
 package com.example.asrclient;
 
+import com.android.volley.Request;
+import com.android.volley.request.JsonObjectRequest;
+import com.android.volley.request.JsonRequest;
 import com.android.volley.request.StringRequest;
 import com.android.volley.Response;
+
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginRequest extends StringRequest {
-    private static final String Login_URL = "http://192.168.43.30:8080/userval";
-    private Map<String, String> params;
+public class LoginRequest extends JsonObjectRequest {
+    private static String Login_URL = ConnectClient.getIP()+"/userval";
 
-    public LoginRequest(String username, String password,
-                        Response.Listener<String> listener) {
-        super(Method.POST, Login_URL, listener, null);
-        params = new HashMap<>();
-        params.put("username",username);
-        params.put("password", password);
+    public LoginRequest(JSONObject parameters,
+                        Response.Listener<JSONObject> listener, Response.ErrorListener errlistener){
+        super(Method.POST,Login_URL,parameters,listener,errlistener);
     }
 
-    @Override
-    public Map<String, String> getParams() {
-        return params;
-    }
 }

@@ -1,5 +1,6 @@
 package com.example.asrclient;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -27,7 +28,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonObjectRequest;
 import com.android.volley.request.SimpleMultiPartRequest;
+import com.android.volley.request.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.atilika.kuromoji.ipadic.Token;
 import com.atilika.kuromoji.ipadic.Tokenizer;
@@ -40,7 +43,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import omrecorder.AudioChunk;
@@ -67,9 +72,6 @@ public class TestClient extends AppCompatActivity {
     private float timeElapsed;
 
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +87,7 @@ public class TestClient extends AppCompatActivity {
         final Button recordButton = (Button) findViewById(R.id.btnRecord);
         final Button nextButton = (Button) findViewById(R.id.btnNext);
         final Button resendButton = (Button) findViewById(R.id.btnSend);
+        final Button collectButton = (Button) findViewById(R.id.btnCollect);
         final TextView TV = (TextView) findViewById(R.id.tvSoal);
         final TextView Result = (TextView) findViewById(R.id.lineResult);
         final TextView Score = (TextView) findViewById(R.id.lineScore);
@@ -92,6 +95,7 @@ public class TestClient extends AppCompatActivity {
         final TextView Time = (TextView) findViewById(R.id.lineTime);
         final TextView TotalChar = (TextView) findViewById(R.id.lineLetter);
         final ProgressBar loadingbar = (ProgressBar) findViewById(R.id.asrprogress);
+        ScoreResult scoreres;
 
         TV.setTextSize(30);
 
@@ -99,7 +103,12 @@ public class TestClient extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 TV.setText(list_sentence.get(number));
-            }});
+            }
+            @Override
+            public void onFailed(){
+
+            }
+        });
 
         recordButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -192,6 +201,37 @@ public class TestClient extends AppCompatActivity {
             }
         });
 
+        collectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadingbar.bringToFront();
+                loadingbar.setVisibility(View.VISIBLE);
+                Map<String,String> params = new HashMap<>();
+                params.put("sen_test",TV.getText().toString());
+                params.put("sen_res",Result.getText().toString());
+                ScoreResult scoreres = scoring(TV.getText().toString(),Result.getText().toString());
+                params.put("token_test",scoreres.getToken_t().toString());
+                params.put("token_res",scoreres.getToken_r().toString());
+                params.put("au_size",AuSize.getText().toString());
+                params.put("ex_time",Time.getText().toString());
+                params.put("sum_token_test",String.valueOf(scoreres.getTokensource()));
+                params.put("sum_token_res", String.valueOf(scoreres.getTokendest()));
+                params.put("score",Score.getText().toString());
+                JSONObject obj = new JSONObject(params);
+                collectData(obj, new VolleyCallBack() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(getApplicationContext(),"Successfully collect data",Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFailed() {
+                        Toast.makeText(getApplicationContext(),"Failed to collect data",Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+
 
     }
 
@@ -248,13 +288,12 @@ public class TestClient extends AppCompatActivity {
             }
         }
         acc_score = score/tokens.size();
-        ScoreResult rest_sc = new ScoreResult(acc_score,tokens.size(),tokens_res.size());
+        ScoreResult rest_sc = new ScoreResult(acc_score,tokens,tokens_res,tokens.size(),tokens_res.size());
         return rest_sc;
     }
 
     public void loadsentence(final VolleyCallBack callBack){
         Response.Listener<String> responseListener = new Response.Listener<String>(){
-
             public void onResponse(String response){
                 try{
                     JSONObject obj = new JSONObject(response);
@@ -267,7 +306,7 @@ public class TestClient extends AppCompatActivity {
                 }
                 catch(JSONException ee){
                     ee.printStackTrace();
-
+                    callBack.onFailed();
                 }
 
             }
@@ -279,7 +318,7 @@ public class TestClient extends AppCompatActivity {
     }
 
     private void waveUpload(final String wavePath, final VolleyCallBackFile callBack) {
-        SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST,"http://192.168.1.6:8000/asr_julius"  ,
+        SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST,ConnectClient.getIP() + "/asr_julius"  ,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -309,8 +348,29 @@ public class TestClient extends AppCompatActivity {
         multireq.add(smr);
         startTime = System.nanoTime();
         multireq.start();
-
     }
 
+    private void collectData(JSONObject parameters,final VolleyCallBack callBack){
+        JsonObjectRequest Jreq = new JsonObjectRequest(Request.Method.POST, ConnectClient.getIP() + "/collect_data",parameters,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject result = response.getJSONObject("success");
+                            //Toast.makeText(getApplicationContext(), obj.toString(), Toast.LENGTH_LONG).show();
+                            callBack.onSuccess();
+                        } catch (JSONException ee) {
+                            ee.printStackTrace();
+                            callBack.onFailed();
+                        }
+                    }
 
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callBack.onFailed();
+            }
+        });
+    }
 }

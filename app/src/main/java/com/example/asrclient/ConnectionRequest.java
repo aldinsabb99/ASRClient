@@ -6,13 +6,14 @@ import com.android.volley.request.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TestRequest extends StringRequest {
-    private static String Main_URL = ConnectClient.getIP() + "/get_sentences";
+public class ConnectionRequest extends StringRequest {
+    private static String Main_URL = ConnectClient.getIP() + "/test_conn";
     private Map<String, String> params;
 
-    public TestRequest(Response.Listener<String> listener) {
+    public ConnectionRequest(Response.Listener<String> listener) {
         super(Method.GET, Main_URL, listener, null);
         params = new HashMap<>();
+
     }
 
     @Override
