@@ -46,7 +46,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import omrecorder.AudioChunk;
 import omrecorder.AudioRecordConfig;
@@ -54,19 +53,20 @@ import omrecorder.OmRecorder;
 import omrecorder.PullTransport;
 import omrecorder.PullableSource;
 import omrecorder.Recorder;
-import omrecorder.WriteAction;
 
-import static android.Manifest.permission.RECORD_AUDIO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+
 
 public class TestClient extends AppCompatActivity {
     private Recorder recorder;
     private static final int RequestPermissionCode = 1;
-    private int currentUserId;
-    private static int number=0;
+    private int number=0;
     private String File_path;
-    private List<String> list_sentence = new ArrayList<String>();
+    private List<String> list_sentence = new ArrayList<>();
+    private List<Integer> list_id = new ArrayList<>();
+    private List<Float> list_score = new ArrayList<>();
     private String message;
+    private String winnowing;
     private long startTime;
     private long endTime;
     private float timeElapsed;
@@ -78,24 +78,30 @@ public class TestClient extends AppCompatActivity {
         setContentView(R.layout.activity_test_client);
         getSupportActionBar().setTitle("Pronunciation Test");
 
-        Intent i = getIntent();
-        Bundle b = i.getExtras();
-        if (b != null) {
-            currentUserId = b.getInt("id_user");
-        }
+        final Button recordButton = findViewById(R.id.btnRecord);
+        final Button nextButton = findViewById(R.id.btnNext);
+        final Button prevButton = findViewById(R.id.btnPrevious);
+        final Button resendButton = findViewById(R.id.btnSend);
+        final Button collectButton = findViewById(R.id.btnCollect);
+        final TextView TV = findViewById(R.id.tvSoal);
+        final TextView Result = findViewById(R.id.lineResult);
+        final TextView Score = findViewById(R.id.lineScore);
+        final TextView AuSize = findViewById(R.id.lineSize);
+        final TextView Time = findViewById(R.id.lineTime);
+        final TextView TvScore = findViewById(R.id.tvSkor);
+        final TextView TotalChar = findViewById(R.id.lineLetter);
+        final ProgressBar loadingbar = findViewById(R.id.asrprogress);
+        final TextView Winnowing = findViewById(R.id.lineScoreWin);
 
-        final Button recordButton = (Button) findViewById(R.id.btnRecord);
-        final Button nextButton = (Button) findViewById(R.id.btnNext);
-        final Button resendButton = (Button) findViewById(R.id.btnSend);
-        final Button collectButton = (Button) findViewById(R.id.btnCollect);
-        final TextView TV = (TextView) findViewById(R.id.tvSoal);
-        final TextView Result = (TextView) findViewById(R.id.lineResult);
-        final TextView Score = (TextView) findViewById(R.id.lineScore);
-        final TextView AuSize = (TextView) findViewById(R.id.lineSize);
-        final TextView Time = (TextView) findViewById(R.id.lineTime);
-        final TextView TotalChar = (TextView) findViewById(R.id.lineLetter);
-        final ProgressBar loadingbar = (ProgressBar) findViewById(R.id.asrprogress);
-        ScoreResult scoreres;
+        if(number>0) {
+            prevButton.setVisibility(View.VISIBLE);
+        }
+        else if(number<=0){
+            prevButton.setVisibility(View.INVISIBLE);
+        }
+        else if(list_sentence.size()==(number+1)){
+            nextButton.setText("FINISH");
+        }
 
         TV.setTextSize(30);
 
@@ -106,7 +112,7 @@ public class TestClient extends AppCompatActivity {
             }
             @Override
             public void onFailed(){
-
+                Toast.makeText(getApplicationContext(),"Unable load sentences",Toast.LENGTH_LONG).show();
             }
         });
 
@@ -118,7 +124,6 @@ public class TestClient extends AppCompatActivity {
                     deletefile();
                     setupRecorder();
                     recorder.startRecording();
-
                 }
                 if(event.getAction()==MotionEvent.ACTION_UP){
                     try {
@@ -131,21 +136,30 @@ public class TestClient extends AppCompatActivity {
                     loadingbar.bringToFront();
                     loadingbar.setVisibility(View.VISIBLE);
                     File_path = Environment.getExternalStorageDirectory().getPath()+"/test.wav";
+                    
                     final File audio_file =new File(File_path);
                     waveUpload(File_path, new VolleyCallBackFile() {
                             @Override
-                            public void onSuccess(String response) {
+                            public void onSuccess(String response, String response2) {
                                 timeElapsed = (endTime - startTime)/1000000;
                                 double bytes = (audio_file.length());
-                                double kilobytes = (bytes/1024);
                                 Result.setText(response);
                                 loadingbar.setVisibility(View.INVISIBLE);
-                                AuSize.setText(bytes + " Bytes");
-                                Time.setText(timeElapsed + " ms");
+                                AuSize.setText(String.valueOf(bytes));
+                                Time.setText(String.valueOf(timeElapsed));
                                 ScoreResult scoreres = scoring(list_sentence.get(number),response);
-                                Score.setText(scoreres.getScore() + " ");
+                                Score.setText(String.valueOf(scoreres.getScore()));
+                                Winnowing.setText(response2);
                                 TotalChar.setText(scoreres.getTokendest() + " / " + scoreres.getTokensource() );
-
+                                if(list_score.isEmpty()){
+                                    for(int j=0;j<list_sentence.size();j++){
+                                    list_score.add(j,0f);
+                                    }
+                                }
+                                list_score.set(number,Float.parseFloat(response2));
+                            }
+                            public void onFailed(){
+                                loadingbar.setVisibility(View.INVISIBLE);
                             }
                         });
 
@@ -159,8 +173,17 @@ public class TestClient extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                float total_score=0;
+                for(int i=0;i<list_score.size();i++){
+                    total_score=total_score+list_score.get(i);
+                }
+                TvScore.setText(String.valueOf(total_score*10));
                 number++;
+                prevButton.setVisibility(View.VISIBLE);
+                if(list_sentence.size()==(number+1)){
+                    nextButton.setText("FINISH");
+                }
+
                 try {
                     TV.setText(list_sentence.get(number));
                     Result.setText("");
@@ -171,6 +194,66 @@ public class TestClient extends AppCompatActivity {
                 }
                 catch (IndexOutOfBoundsException e){
                     number--;
+                    Map<String,String> paramss = new HashMap<>();
+                    paramss.put("id_user",String.valueOf(SharedPreferencesClient.getId(getApplicationContext())));
+                    paramss.put("score",String.valueOf(total_score));
+                    JSONObject obj = new JSONObject(paramss);
+                    Response.Listener<JSONObject> responselistener = new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                String result = response.getString("sub_time");
+                                Toast.makeText(getApplicationContext(), "Score submitted at " + result, Toast.LENGTH_LONG).show();
+                            }
+                            catch (JSONException e) {
+                                Toast.makeText(getApplicationContext(), "Failed to submit score", Toast.LENGTH_LONG).show();
+                            }
+                            }
+                    };
+
+                    Response.ErrorListener errListener = new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), "Failed to submit score", Toast.LENGTH_LONG).show();
+                        }
+                    };
+                    ScoreCollectRequest scoreCollectRequest = new ScoreCollectRequest(obj,responselistener,errListener);
+                    RequestQueue queue = Volley.newRequestQueue(TestClient.this);
+                    queue.add(scoreCollectRequest);
+                    queue.getCache().invalidate(ConnectClient.getIP()+"/set_score",true);
+
+                    Intent i = new Intent(TestClient.this, ScoreClient.class);
+                    //i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    i.putExtra("total_score",total_score);
+                    i.putExtra("max_score",(number+1)*10);
+                    TestClient.this.startActivity(i);
+                    TestClient.this.finish();
+                }
+            }
+        });
+
+        prevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float total_score=0;
+                for(int i=0;i<list_score.size();i++){
+                    total_score=total_score+list_score.get(i);
+                }
+                TvScore.setText(String.valueOf(total_score*10));
+                number--;
+                if(number<=0){
+                    prevButton.setVisibility(View.INVISIBLE);
+                }
+                try {
+                    TV.setText(list_sentence.get(number));
+                    Result.setText("");
+                    AuSize.setText("");
+                    Time.setText("");
+                    TotalChar.setText("");
+                    Score.setText("");
+                }
+                catch (IndexOutOfBoundsException e){
+                    number++;
                 }
             }
         });
@@ -184,17 +267,27 @@ public class TestClient extends AppCompatActivity {
                 final File audio_file =new File(File_path);
                 waveUpload(File_path, new VolleyCallBackFile() {
                     @Override
-                    public void onSuccess(String response) {
+                    public void onSuccess(String response, String response2) {
                         timeElapsed = (endTime - startTime)/1000000;
                         double bytes = (audio_file.length());
                         double kilobytes = (bytes/1024);
                         Result.setText(response);
                         loadingbar.setVisibility(View.INVISIBLE);
-                        AuSize.setText(bytes + " Bytes");
-                        Time.setText(timeElapsed + " ms");
+                        AuSize.setText(String.valueOf(bytes));
+                        Time.setText(String.valueOf(timeElapsed));
                         ScoreResult scoreres = scoring(list_sentence.get(number),response);
-                        Score.setText(scoreres.getScore() + " ");
+                        Score.setText(String.valueOf(scoreres.getScore()));
+                        Winnowing.setText(response2);
                         TotalChar.setText(scoreres.getTokendest() + " / " + scoreres.getTokensource() );
+                        if(list_score.isEmpty()){
+                            for(int j=0;j<list_sentence.size();j++){
+                                list_score.add(j,0f);
+                            }
+                        }
+                        list_score.set(number,Float.parseFloat(response2));
+                    }
+                    public void onFailed(){
+                        loadingbar.setVisibility(View.INVISIBLE);
                     }
                 });
 
@@ -207,28 +300,48 @@ public class TestClient extends AppCompatActivity {
                 loadingbar.bringToFront();
                 loadingbar.setVisibility(View.VISIBLE);
                 Map<String,String> params = new HashMap<>();
-                params.put("sen_test",TV.getText().toString());
+                //params.put("sen_test",TV.getText().toString());
                 params.put("sen_res",Result.getText().toString());
                 ScoreResult scoreres = scoring(TV.getText().toString(),Result.getText().toString());
-                params.put("token_test",scoreres.getToken_t().toString());
-                params.put("token_res",scoreres.getToken_r().toString());
+                String[] surface_t = new String[scoreres.getToken_t().size()];
+                String[] pronouce_t = new String[scoreres.getToken_t().size()];
+                for(int i = 0; i < surface_t.length; i++) {
+                    surface_t[i] = scoreres.getToken_t().get(i).getSurface();
+                    pronouce_t[i] = scoreres.getToken_t().get(i).getPronunciation();
+                }
+                String[] surface_r = new String[scoreres.getToken_r().size()];
+                String[] pronouce_r = new String[scoreres.getToken_r().size()];
+                for(int i = 0; i < surface_r.length; i++) {
+                    surface_r[i] = scoreres.getToken_r().get(i).getSurface();
+                    pronouce_r[i] = scoreres.getToken_r().get(i).getPronunciation();
+                }
+                //params.put("sum_token_test",String.valueOf(scoreres.getTokensource()));
+                params.put("id_sentence",String.valueOf(list_id.get(number)));
+                params.put("id_user",String.valueOf(SharedPreferencesClient.getId(getApplicationContext())));
+                params.put("sum_token_res",String.valueOf(scoreres.getTokendest()));
                 params.put("au_size",AuSize.getText().toString());
                 params.put("ex_time",Time.getText().toString());
-                params.put("sum_token_test",String.valueOf(scoreres.getTokensource()));
-                params.put("sum_token_res", String.valueOf(scoreres.getTokendest()));
+                //params.put("token_test_sur",Arrays.toString(surface_t));
+                //params.put("token_test_pro", Arrays.toString(pronouce_t));
+                params.put("token_res_sur",Arrays.toString(surface_r));
+                params.put("token_res_pro", Arrays.toString(pronouce_r));
                 params.put("score",Score.getText().toString());
-                JSONObject obj = new JSONObject(params);
-                collectData(obj, new VolleyCallBack() {
+                JSONObject collect_object = new JSONObject(params);
+                //Toast.makeText(getApplicationContext(),collect_object.toString(),Toast.LENGTH_LONG).show();
+                collectData(collect_object, new VolleyCallBack() {
                     @Override
                     public void onSuccess() {
                         Toast.makeText(getApplicationContext(),"Successfully collect data",Toast.LENGTH_LONG).show();
+                        loadingbar.setVisibility(View.INVISIBLE);
                     }
 
                     @Override
                     public void onFailed() {
                         Toast.makeText(getApplicationContext(),"Failed to collect data",Toast.LENGTH_LONG).show();
+                        loadingbar.setVisibility(View.INVISIBLE);
                     }
                 });
+
             }
         });
 
@@ -266,10 +379,13 @@ public class TestClient extends AppCompatActivity {
 
     public ScoreResult scoring(String question, String test){
         test = test.replaceAll("\\s+","");
+        test = test.replaceAll("。","");
+        test = test.replaceAll("、","");
         Tokenizer tokenizer = new Tokenizer();
         List<Token> tokens = tokenizer.tokenize(question);
         List<Token> tokens_res = tokenizer.tokenize(test);
         int j=0;
+
         int k=0;
         float score=0;
         float acc_score=0;
@@ -300,6 +416,7 @@ public class TestClient extends AppCompatActivity {
                     JSONArray array_lists = obj.getJSONArray("list_sentence");
                     for(int i = 0 ; i < array_lists.length() ; i++){
                         list_sentence.add(array_lists.getJSONObject(i).getString("sentence"));
+                        list_id.add(array_lists.getJSONObject(i).getInt("id"));
                     }
                     callBack.onSuccess();
 
@@ -315,6 +432,7 @@ public class TestClient extends AppCompatActivity {
         TestRequest testRequest = new TestRequest(responseListener);
         RequestQueue queue = Volley.newRequestQueue(TestClient.this);
         queue.add(testRequest);
+        queue.getCache().invalidate(ConnectClient.getIP()+"/get_sentences",true);
     }
 
     private void waveUpload(final String wavePath, final VolleyCallBackFile callBack) {
@@ -327,23 +445,26 @@ public class TestClient extends AppCompatActivity {
                         try {
                             JSONObject jObj = new JSONObject(response);
                             message = jObj.getString("asr_result");
-                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                            winnowing = jObj.getString("winnowing_score");
+                            //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
 
                         } catch (JSONException e) {
                             // JSON error
                             e.printStackTrace();
                             Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
-                        callBack.onSuccess(message);
+                        callBack.onSuccess(message,winnowing);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                callBack.onFailed();
             }
         });
         smr.addFile("myFile", wavePath);
-        //UploadWaveFile.getInstance().addToRequestQueue(smr);
+        //smr.addMultipartParam("body", "text/plain", String.valueOf(number+1));
+        smr.addStringParam("paramstring",String.valueOf(number+1));
         RequestQueue multireq = Volley.newRequestQueue(getApplicationContext());
         multireq.add(smr);
         startTime = System.nanoTime();
@@ -357,7 +478,7 @@ public class TestClient extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONObject result = response.getJSONObject("success");
-                            //Toast.makeText(getApplicationContext(), obj.toString(), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
                             callBack.onSuccess();
                         } catch (JSONException ee) {
                             ee.printStackTrace();
@@ -372,5 +493,12 @@ public class TestClient extends AppCompatActivity {
                 callBack.onFailed();
             }
         });
+
+        RequestQueue queues = Volley.newRequestQueue(getApplicationContext());
+        queues.add(Jreq);
+        queues.getCache().invalidate(ConnectClient.getIP()+"/collect_data",true);
     }
+
+
+
 }

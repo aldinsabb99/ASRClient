@@ -1,15 +1,17 @@
 package com.example.asrclient;
 
+import com.atilika.kuromoji.ipadic.Token;
+
 import java.util.List;
 
 public class ScoreResult {
-    private List token_t;
-    private List token_r;
+    private List<Token> token_t;
+    private List<Token> token_r;
     private float score;
     private int tokensource;
     private int tokendest;
 
-    ScoreResult(float score, List token_t, List token_r, int tokensource, int tokendest){
+    ScoreResult(float score, List<Token> token_t, List<Token> token_r, int tokensource, int tokendest){
         this.token_t = token_t;
         this.token_r = token_r;
         this.score = score;
@@ -29,7 +31,7 @@ public class ScoreResult {
         return tokendest;
     }
 
-    public List getToken_t(){ return token_t;}
+    public List<Token> getToken_t(){ return token_t;}
 
-    public List getToken_r(){ return token_r;}
+    public List<Token> getToken_r(){ return token_r;}
 }

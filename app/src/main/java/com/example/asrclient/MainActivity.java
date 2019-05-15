@@ -20,11 +20,12 @@ import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.ACCESS_NETWORK_STATE;
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
 public class MainActivity extends AppCompatActivity {
 
     LinearLayout mlineTest, mlineScore;
-    TextView mlineLogout;
+    TextView mlineLogout,mName;
     private static final int RequestPermissionCode = 1;
 
     @Override
@@ -37,10 +38,14 @@ public class MainActivity extends AppCompatActivity {
             requestPermission();
         }
 
-        mlineTest = (LinearLayout) findViewById(R.id.lineTest);
-        mlineScore = (LinearLayout) findViewById(R.id.lineScore);
-        mlineLogout = (TextView) findViewById(R.id.logout);
 
+        mlineTest = findViewById(R.id.lineTest);
+        mlineScore = findViewById(R.id.lineScore);
+        mlineLogout = findViewById(R.id.logout);
+        mName = findViewById(R.id.name);
+
+
+        mName.setText(SharedPreferencesClient.getName(getApplicationContext()));
 
         mlineTest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,8 +66,7 @@ public class MainActivity extends AppCompatActivity {
         mlineLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, LoginClient.class);
-                startActivity(i);
+                onBackPressed();
             }
         });
     }
@@ -71,14 +75,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Anda yakin ingin keluar ?");
-        builder.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+        builder.setTitle("Are you sure want to Log Out?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
+                logout();
             }
         });
-        builder.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -128,6 +132,19 @@ public class MainActivity extends AppCompatActivity {
         int result3 = ContextCompat.checkSelfPermission(getApplicationContext(),
                 ACCESS_NETWORK_STATE);
         return result == PackageManager.PERMISSION_GRANTED &&
-                result1 == PackageManager.PERMISSION_GRANTED;
+                result1 == PackageManager.PERMISSION_GRANTED &&
+                result2 == PackageManager.PERMISSION_GRANTED &&
+                result3 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void logout(){
+        Intent i = new Intent(MainActivity.this, LoginClient.class);
+        SharedPreferencesClient.setId(getApplicationContext(),0);
+        SharedPreferencesClient.setName(getApplicationContext(),null);
+        SharedPreferencesClient.setToken(getApplicationContext(),null);
+        SharedPreferencesClient.setLoggedIn(getApplicationContext(),false);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK|FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+
     }
 }

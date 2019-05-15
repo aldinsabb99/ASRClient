@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     tools:context=".ConnectClient"
-    android:layout_margin="20dp">
+    android:background="@color/kuningmudasekali">
 
     <ProgressBar
         android:layout_margin="50dp"
@@ -21,15 +21,18 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CONNECTION SETTINGS"
         android:layout_marginBottom="15dp"
-        android:textSize="25dp"/>
+        android:textSize="25dp"
+        android:textColor="@color/g_biru4"/>
 
 
     <LinearLayout
+        android:layout_marginLeft="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -80,6 +83,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_marginLeft="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -141,14 +145,18 @@
             android:layout_height="wrap_content"
             android:text="OK"
             android:layout_marginRight="40dp"
-            android:id="@+id/ok"/>
+            android:id="@+id/ok"
+            android:background="@color/g_biru4"
+            android:textColor="@color/kuning"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="APPLY"
             android:layout_marginLeft="40dp"
-            android:id="@+id/apply"/>
+            android:id="@+id/apply"
+            android:background="@color/g_biru4"
+            android:textColor="@color/kuning"/>
 
 
     </LinearLayout>

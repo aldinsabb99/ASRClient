@@ -5,23 +5,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TotalScoreClient"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/biru5">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/shows">
-    </TextView>
+        android:orientation="vertical"
+        android:layout_margin="25dp">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/shows2">
-    </TextView>
-    <TextView
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/oranye">
+
+        <TextView
+            android:id="@+id/shows"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="40dp"
+            android:textSize="25dp"
+            android:text="SCORE HISTORY">
+        </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/shows3">
-    </TextView>
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/kuningmudasekali">
+
+        <ListView
+            android:id="@+id/score_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"></ListView>
+
+
+    </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
+
