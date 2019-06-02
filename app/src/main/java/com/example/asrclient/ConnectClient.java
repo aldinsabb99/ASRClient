@@ -94,7 +94,6 @@ public class ConnectClient extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Try to connect "+getIP(), Toast.LENGTH_LONG).show();
                 loading.bringToFront();
                 loading.setVisibility(View.VISIBLE);
-                //HttpsTrustManager.allowAllSSL();
                 String url = getIP()+"/test_conn";
 //                HurlStack hurlStack = new HurlStack() {
 //                    @Override

@@ -70,6 +70,7 @@ public class TestClient extends AppCompatActivity {
     private long startTime;
     private long endTime;
     private float timeElapsed;
+    private String currentArrayScore;
 
 
     @Override
@@ -85,22 +86,26 @@ public class TestClient extends AppCompatActivity {
         final Button collectButton = findViewById(R.id.btnCollect);
         final TextView TV = findViewById(R.id.tvSoal);
         final TextView Result = findViewById(R.id.lineResult);
-        final TextView Score = findViewById(R.id.lineScore);
+        //final TextView Score = findViewById(R.id.lineScore);
         final TextView AuSize = findViewById(R.id.lineSize);
         final TextView Time = findViewById(R.id.lineTime);
         final TextView TvScore = findViewById(R.id.tvSkor);
-        final TextView TotalChar = findViewById(R.id.lineLetter);
+        //final TextView TotalChar = findViewById(R.id.lineLetter);
         final ProgressBar loadingbar = findViewById(R.id.asrprogress);
         final TextView Winnowing = findViewById(R.id.lineScoreWin);
 
         if(number>0) {
             prevButton.setVisibility(View.VISIBLE);
         }
-        else if(number<=0){
+        else{
             prevButton.setVisibility(View.INVISIBLE);
         }
-        else if(list_sentence.size()==(number+1)){
+
+        if(list_sentence.size()==(number+1)){
             nextButton.setText("FINISH");
+        }
+        else {
+            nextButton.setText("NEXT");
         }
 
         TV.setTextSize(30);
@@ -132,12 +137,13 @@ public class TestClient extends AppCompatActivity {
                         e.printStackTrace();
                         Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
                     }
-                    Toast.makeText(getApplicationContext(), "Recorded", Toast.LENGTH_LONG).show();
                     loadingbar.bringToFront();
                     loadingbar.setVisibility(View.VISIBLE);
                     File_path = Environment.getExternalStorageDirectory().getPath()+"/test.wav";
                     
                     final File audio_file =new File(File_path);
+                    //Toast.makeText(getApplicationContext(), String.valueOf(audio_file.length()),Toast.LENGTH_LONG).show();
+                    if(audio_file.length() >= 22000){
                     waveUpload(File_path, new VolleyCallBackFile() {
                             @Override
                             public void onSuccess(String response, String response2) {
@@ -148,9 +154,10 @@ public class TestClient extends AppCompatActivity {
                                 AuSize.setText(String.valueOf(bytes));
                                 Time.setText(String.valueOf(timeElapsed));
                                 ScoreResult scoreres = scoring(list_sentence.get(number),response);
-                                Score.setText(String.valueOf(scoreres.getScore()));
+                                currentArrayScore = String.valueOf(scoreres.getScore());
+                                //Score.setText(String.valueOf(scoreres.getScore()));
                                 Winnowing.setText(response2);
-                                TotalChar.setText(scoreres.getTokendest() + " / " + scoreres.getTokensource() );
+                                //TotalChar.setText(scoreres.getTokendest() + " / " + scoreres.getTokensource() );
                                 if(list_score.isEmpty()){
                                     for(int j=0;j<list_sentence.size();j++){
                                     list_score.add(j,0f);
@@ -165,6 +172,11 @@ public class TestClient extends AppCompatActivity {
 
 
                 }
+                else{
+                    Toast.makeText(getApplicationContext(), "Record Failed",Toast.LENGTH_LONG).show();
+                    loadingbar.setVisibility(View.INVISIBLE);
+                    }
+                }
                 return true;
 
             }
@@ -177,7 +189,7 @@ public class TestClient extends AppCompatActivity {
                 for(int i=0;i<list_score.size();i++){
                     total_score=total_score+list_score.get(i);
                 }
-                TvScore.setText(String.valueOf(total_score*10));
+                TvScore.setText(String.valueOf(total_score));
                 number++;
                 prevButton.setVisibility(View.VISIBLE);
                 if(list_sentence.size()==(number+1)){
@@ -186,11 +198,12 @@ public class TestClient extends AppCompatActivity {
 
                 try {
                     TV.setText(list_sentence.get(number));
+                    Winnowing.setText("");
                     Result.setText("");
                     AuSize.setText("");
                     Time.setText("");
-                    TotalChar.setText("");
-                    Score.setText("");
+                    //TotalChar.setText("");
+                    //Score.setText("");
                 }
                 catch (IndexOutOfBoundsException e){
                     number--;
@@ -239,18 +252,22 @@ public class TestClient extends AppCompatActivity {
                 for(int i=0;i<list_score.size();i++){
                     total_score=total_score+list_score.get(i);
                 }
-                TvScore.setText(String.valueOf(total_score*10));
+                TvScore.setText(String.valueOf(total_score));
                 number--;
                 if(number<=0){
                     prevButton.setVisibility(View.INVISIBLE);
                 }
+                if(nextButton.getText()=="FINISH"){
+                    nextButton.setText("NEXT");
+                }
                 try {
                     TV.setText(list_sentence.get(number));
+                    Winnowing.setText("");
                     Result.setText("");
                     AuSize.setText("");
                     Time.setText("");
-                    TotalChar.setText("");
-                    Score.setText("");
+                    //TotalChar.setText("");
+                    //Score.setText("");
                 }
                 catch (IndexOutOfBoundsException e){
                     number++;
@@ -270,15 +287,15 @@ public class TestClient extends AppCompatActivity {
                     public void onSuccess(String response, String response2) {
                         timeElapsed = (endTime - startTime)/1000000;
                         double bytes = (audio_file.length());
-                        double kilobytes = (bytes/1024);
                         Result.setText(response);
                         loadingbar.setVisibility(View.INVISIBLE);
                         AuSize.setText(String.valueOf(bytes));
                         Time.setText(String.valueOf(timeElapsed));
                         ScoreResult scoreres = scoring(list_sentence.get(number),response);
-                        Score.setText(String.valueOf(scoreres.getScore()));
+                        currentArrayScore = String.valueOf(scoreres.getScore());
+                        //Score.setText(String.valueOf(scoreres.getScore()));
                         Winnowing.setText(response2);
-                        TotalChar.setText(scoreres.getTokendest() + " / " + scoreres.getTokensource() );
+                        //TotalChar.setText(scoreres.getTokendest() + " / " + scoreres.getTokensource() );
                         if(list_score.isEmpty()){
                             for(int j=0;j<list_sentence.size();j++){
                                 list_score.add(j,0f);
@@ -325,7 +342,7 @@ public class TestClient extends AppCompatActivity {
                 //params.put("token_test_pro", Arrays.toString(pronouce_t));
                 params.put("token_res_sur",Arrays.toString(surface_r));
                 params.put("token_res_pro", Arrays.toString(pronouce_r));
-                params.put("score",Score.getText().toString());
+                params.put("score",currentArrayScore);
                 JSONObject collect_object = new JSONObject(params);
                 //Toast.makeText(getApplicationContext(),collect_object.toString(),Toast.LENGTH_LONG).show();
                 collectData(collect_object, new VolleyCallBack() {

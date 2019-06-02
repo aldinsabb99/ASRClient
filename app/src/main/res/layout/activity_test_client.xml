@@ -138,13 +138,13 @@
                         android:layout_marginBottom="10dp"
                         android:text="SCORE WINNOWING"
                         android:textSize="15dp" />
-                    <TextView
-                        android:id="@+id/Score"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="SCORE ARRAY"
-                        android:textSize="15dp" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/Score"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="10dp"-->
+                        <!--android:text="SCORE ARRAY"-->
+                        <!--android:textSize="15dp" />-->
 
                     <TextView
                         android:id="@+id/Size"
@@ -162,13 +162,13 @@
                         android:text="TIME (MilliSecond)"
                         android:textSize="15dp" />
 
-                    <TextView
-                        android:id="@+id/Letter"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="TOTAL TOKEN"
-                        android:textSize="15dp" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/Letter"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="10dp"-->
+                        <!--android:text="TOTAL TOKEN"-->
+                        <!--android:textSize="15dp" />-->
 
                 </LinearLayout>
 
@@ -183,12 +183,12 @@
                         android:layout_marginBottom="10dp"
                         android:text=": "
                         android:textSize="15dp" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text=": "
-                        android:textSize="15dp" />
+                    <!--<TextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="10dp"-->
+                        <!--android:text=": "-->
+                        <!--android:textSize="15dp" />-->
 
                     <TextView
                         android:layout_width="match_parent"
@@ -204,12 +204,12 @@
                         android:text=": "
                         android:textSize="15dp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text=": "
-                        android:textSize="15dp" />
+                    <!--<TextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="10dp"-->
+                        <!--android:text=": "-->
+                        <!--android:textSize="15dp" />-->
 
                 </LinearLayout>
 
@@ -226,13 +226,13 @@
                         android:layout_marginBottom="10dp"
                         android:text=""
                         android:textSize="15dp" />
-                <TextView
-                    android:id="@+id/lineScore"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text=""
-                    android:textSize="15dp" />
+                <!--<TextView-->
+                    <!--android:id="@+id/lineScore"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="10dp"-->
+                    <!--android:text=""-->
+                    <!--android:textSize="15dp" />-->
 
                 <TextView
                     android:id="@+id/lineSize"
@@ -250,13 +250,13 @@
                     android:text=""
                     android:textSize="15dp" />
 
-                <TextView
-                    android:id="@+id/lineLetter"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text=""
-                    android:textSize="15dp" />
+                <!--<TextView-->
+                    <!--android:id="@+id/lineLetter"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="10dp"-->
+                    <!--android:text=""-->
+                    <!--android:textSize="15dp" />-->
 
 
             </LinearLayout>
