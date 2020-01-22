@@ -219,7 +219,7 @@ public class TestClient extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "Score submitted at " + result, Toast.LENGTH_LONG).show();
                             }
                             catch (JSONException e) {
-                                Toast.makeText(getApplicationContext(), "Failed to submit score", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(), "Failed to submit score", Toast.LENGTH_LONG).show();
                             }
                             }
                     };
@@ -227,7 +227,7 @@ public class TestClient extends AppCompatActivity {
                     Response.ErrorListener errListener = new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), "Failed to submit score", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getApplicationContext(), "Failed to submit score", Toast.LENGTH_LONG).show();
                         }
                     };
                     ScoreCollectRequest scoreCollectRequest = new ScoreCollectRequest(obj,responselistener,errListener);
@@ -238,7 +238,7 @@ public class TestClient extends AppCompatActivity {
                     Intent i = new Intent(TestClient.this, ScoreClient.class);
                     //i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     i.putExtra("total_score",total_score);
-                    i.putExtra("max_score",(number+1)*10);
+                    i.putExtra("max_score",(number+1)*100);
                     TestClient.this.startActivity(i);
                     TestClient.this.finish();
                 }
@@ -354,7 +354,7 @@ public class TestClient extends AppCompatActivity {
 
                     @Override
                     public void onFailed() {
-                        Toast.makeText(getApplicationContext(),"Failed to collect data",Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(),"Failed to collect data",Toast.LENGTH_LONG).show();
                         loadingbar.setVisibility(View.INVISIBLE);
                     }
                 });
