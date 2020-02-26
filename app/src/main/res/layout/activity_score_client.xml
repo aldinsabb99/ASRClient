@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ScoreClient"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/biru5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="25dp">
+        <TextView
+            android:id="@+id/totalScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:gravity="center"
+            android:textSize="45dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/"
+            android:gravity="center"
+            android:textSize="40dp"/>
+        <TextView
+            android:id="@+id/maxScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MaxScore"
+            android:gravity="center"
+            android:textSize="30dp"/>
+
+    </LinearLayout>
+     <Button
+        android:id="@+id/trybutton"
+        android:textSize="25dp"
+         android:paddingBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TRY AGAIN"
+         android:background="@color/g_biru4"
+         android:textColor="@color/photo_crop_highlight_color"/>
+    <Button
+        android:layout_margin="15dp"
+        android:id="@+id/endbutton"
+        android:textSize="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MAIN MENU"
+        android:background="@color/oranye"
+        android:textColor="@color/kuningmudasekali"
+        />
+
+
+</LinearLayout>
