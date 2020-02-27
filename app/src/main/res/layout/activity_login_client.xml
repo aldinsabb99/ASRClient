@@ -4,77 +4,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginClient"
-    android:background="@color/kuningmudasekali">
+    android:background="@color/kuningmudasekali"
+    tools:context=".LoginClient">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ProgressBar
+            android:id="@+id/load"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="45dp"
-            android:visibility="invisible"
-            android:id="@+id/load"/>
+            android:visibility="invisible" />
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/settings"
             android:id="@+id/connect"
-            android:background="@color/kuningmudasekali"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:fitsSystemWindows="true"
-        android:gravity="center">
-
-        <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/logo"/>
-
-        <TextView
-            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Japanese Pronunciation Test"
-            android:textSize="20dp"
-            android:textStyle="bold"/>
-        <EditText
-            android:layout_marginTop="30dp"
-            android:layout_width="170dp"
-            android:layout_height="40dp"
-            android:inputType="text"
-            android:hint="Username"
-            android:id="@+id/inputusername"
-            android:textColorHighlight="@color/colorPrimary"/>
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/kuningmudasekali"
+            android:src="@drawable/settings"
+            android:contentDescription="TODO" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Japanese Pronunciation Test"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/inputusername"
+                android:layout_width="170dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="30dp"
+                android:hint="Username"
+                android:inputType="text"
+                android:textColorHighlight="@color/colorPrimary" />
 
 
-        <EditText
-            android:layout_marginTop="30dp"
-            android:layout_width="170dp"
-            android:layout_height="40dp"
-            android:inputType="textPassword"
-            android:hint="Password"
-            android:id="@+id/inputPass"/>
+            <EditText
+                android:id="@+id/inputPass"
+                android:layout_width="170dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="30dp"
+                android:hint="Password"
+                android:inputType="textPassword" />
 
-        <Button
-            android:layout_marginTop="30dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Login"
-            android:textColor="@color/kuningmuda"
-            android:textColorHint="@color/merah"
-            android:id="@+id/buttonLogin"
-            android:background="@color/g_biru4"/>
+            <Button
+                android:id="@+id/buttonLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:background="@color/g_biru4"
+                android:baselineAligned="false"
+                android:text="Login"
+                android:textColor="@color/kuningmuda"
+                android:textColorHint="@color/merah" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/buttonRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:background="@color/g_biru4"
+                android:baselineAligned="false"
+                android:text="Register"
+                android:textColor="@color/kuningmuda"
+                android:textColorHint="@color/merah" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

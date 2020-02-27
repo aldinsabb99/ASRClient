@@ -715,6 +715,7 @@ id btnRecord
 id btnSend
 id buttonLogin
 id buttonPanel
+id buttonRegister
 id center
 id center_horizontal
 id center_vertical
@@ -823,6 +824,9 @@ id showCustom
 id showHome
 id showTitle
 id shows
+id signup_inputPass
+id signup_inputsurename
+id signup_inputusername
 id spacer
 id split_action_bar
 id spread
@@ -895,6 +899,7 @@ layout activity_connect_client
 layout activity_listscore
 layout activity_login_client
 layout activity_main
+layout activity_register_client
 layout activity_score_client
 layout activity_test_client
 layout activity_total_score_client

@@ -49,12 +49,21 @@ public class LoginClient extends AppCompatActivity {
         final EditText usernameInput = (EditText) findViewById(R.id.inputusername);
         final EditText passInput = (EditText) findViewById(R.id.inputPass);
         final Button loginButton = (Button) findViewById(R.id.buttonLogin);
+        final Button registerButton = (Button) findViewById(R.id.buttonRegister);
         final ProgressBar loading = (ProgressBar) findViewById(R.id.load);
 
         if(SharedPreferencesClient.getLoggedStatus(getApplicationContext())) {
             Intent directInt = new Intent(getApplicationContext(), MainActivity.class);
             LoginClient.this.startActivity(directInt);
         }
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginClient.this, RegisterClient.class);
+                startActivity(intent);
+            }
+        });
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
