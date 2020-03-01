@@ -99,7 +99,7 @@ public class RegisterClient extends AppCompatActivity {
                         } catch (JSONException e){
                             AlertDialog.Builder builder = new AlertDialog.Builder(RegisterClient.this);
                             loading.setVisibility(View.INVISIBLE);
-                            builder.setMessage("Login Failed.")
+                            builder.setMessage("Register Failed.")
                                     .create()
                                     .show();
                         }
@@ -115,9 +115,9 @@ public class RegisterClient extends AppCompatActivity {
                 //Toast.makeText(getApplicationContext(),ConnectClient.getIP() + " ",Toast.LENGTH_LONG).show();
                 loading.bringToFront();
                 loading.setVisibility(View.VISIBLE);
-                LoginRequest loginRequest = new LoginRequest(jsonobj,responseListener,errListener);
+                RegisterRequest registerRequest = new RegisterRequest(jsonobj,responseListener,errListener);
                 RequestQueue queue = Volley.newRequestQueue(RegisterClient.this);
-                queue.add(loginRequest);
+                queue.add(registerRequest);
                 queue.getCache().invalidate(ConnectClient.getIP()+"/userval",true);
             }
         });
